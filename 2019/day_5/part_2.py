@@ -34,8 +34,8 @@ class IntCode():
             return False
         if opcode in [1, 2, 3, 4, 5, 6, 7, 8]:
             self.opcode = opcode
-            self.first_mode = int(n[1])
-            self.second_mode = int(n[0])
+            self.first_mode = first_mode
+            self.second_mode = second_mode
             return True
 
     def set_third_param(self, value):
