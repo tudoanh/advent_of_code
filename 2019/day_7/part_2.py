@@ -1,7 +1,10 @@
+import time
+
+
 class IntCode():
     def __init__(self, program=[], setting=0):
         self.setting = setting
-        self.program = program
+        self.program = program[:]
         self.index = 0
         self._output = []
         self.opcode = None
@@ -9,23 +12,20 @@ class IntCode():
         self.second_mode = None
         self.first_param = None
         self.second_param = None
-        self.input_count = 0
         self.value = None
         self.halted = False
+        self.setted = False
 
     def get_param(self):
-        try:
-            self.first_param = self.program[self.index + 1]
-            if self.first_mode == 0:
-                self.first_param = self.get_value_at(self.index + 1)
+        self.first_param = self.program[self.index + 1]
+        if self.first_mode == 0:
+            self.first_param = self.get_value_at(self.index + 1)
 
-            if self.opcode in [1, 2, 5, 6, 7, 8]:
-                self.second_param = self.program[self.index + 2]
-                if self.second_mode == 0:
-                    self.second_param = self.get_value_at(self.index + 2)
-            print(f"OPcode {self.opcode} - First mode {self.first_mode} - Second mode {self.second_mode} - First param {self.first_param} - Second param {self.second_param}")
-        except IndexError:
-            pass
+        if self.opcode in [1, 2, 5, 6, 7, 8]:
+            self.second_param = self.program[self.index + 2]
+            if self.second_mode == 0:
+                self.second_param = self.get_value_at(self.index + 2)
+        # print(f"OPcode {self.opcode} - First mode {self.first_mode} - Second mode {self.second_mode} - First param {self.first_param} - Second param {self.second_param}")
 
     def is_opcode(self, numb):
         n = str(numb).zfill(4)
@@ -41,19 +41,16 @@ class IntCode():
             return True
 
     def set_third_param(self, value):
-        try:
-            self.program[self.program[self.index + 3]] = value
-        except IndexError as e:
-            pass
+        self.program[self.program[self.index + 3]] = value
 
     def input(self, _input):
-        print(f"Machine setting {self.setting} - Input {_input}")
-        self.value = None
-        if self.input_count == 0:
+        if not self.setted:
+            print(f"Machine[{self.setting}] - Input setting {self.setting}")
             self.program[self.program[self.index + 1]] = self.setting
             self.index += 2
-            self.input_count = 1
+            self.setted = True
         else:
+            print(f"Machine[{self.setting}] - Input {_input} - Index {self.index}")
             self.program[self.program[self.index + 1]] = _input
             self.index += 2
 
@@ -99,11 +96,14 @@ class IntCode():
         return self.program[self.program[index]]
 
     def run(self, _input):
-        self.index = 0
-        while self.index < len(self.program):
-            if not self.halted and self.value is None:
+        try:
+            while self.index < len(self.program):
                 i = self.program[self.index]
-                if self.is_opcode(i):
+                if i == 99:
+                    self.halted = True
+                    print('Halted')
+                    return self.value
+                elif self.is_opcode(i):
                     self.get_param()
                     if self.opcode == 1:
                         self.add()
@@ -113,6 +113,7 @@ class IntCode():
                         self.input(_input)
                     elif self.opcode == 4:
                         self.output()
+                        return self.value
                     elif self.opcode == 5:
                         self.jump_if_true()
                     elif self.opcode == 6:
@@ -121,45 +122,51 @@ class IntCode():
                         self.less_than()
                     elif self.opcode == 8:
                         self.equal()
-                elif i == 99:
-                    self.halted = True
-                    print('Halted')
-                    break
                 else:
                     self.index += 1
-            else:
-                break
-        return self.value
+        except Exception as e:
+            self.halted = True
+            return self.value
 
 
 def test():
-    settings = [9, 8, 7, 6, 5]
+    settings = [9, 7, 8, 5, 6]
     previous_output = 0
-    instruction = [
-        3,26,1001,26,-4,26,3,27,1002,27,2,27,
-        1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5
-    ]
+    # instruction = [
+    #     3,26,1001,26,-4,26,3,27,1002,27,2,27,
+    #     1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5
+    # ]
+    instruction = [3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,
+            -5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,
+            53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10]
     intcodes = [IntCode(instruction, setting=i) for i in settings]
-    print(intcodes[0].run())
-    # while not all([machine.halted for machine in intcodes]):
-    #     for i, mc in enumerate(intcodes):
-    #         output = mc.run(_input=previous_output)
-    #         if not mc.halted:
-    #             previous_output = output
+
+    while all([not machine.halted for machine in intcodes]):
+        for i, mc in enumerate(intcodes):
+            # time.sleep(1)
+            output = mc.run(_input=previous_output)
+            if not mc.halted:
+                previous_output = output
+    assert previous_output == 18216
 
 
 if __name__ == '__main__':
-    test()
-    # import itertools
-    # with open('./input.txt', 'rt') as f:
-    #     input = f.readline().strip()
-    #     instruction = [int(i) for i in input.split(',')]
-    #     result = 0
-    #     for phases in itertools.permutations(range(5)):
-    #         output = 0
-    #         for s in phases:
-    #             output = IntCode(instruction, setting=s, _input=output).run()
-    #         if result < output:
-    #             result = output
-    #     print(result)
+    # test()
+    import itertools
+    with open('./input.txt', 'rt') as f:
+        input = f.readline().strip()
+        instruction = [int(i) for i in input.split(',')]
+        result = 0
+        for phases in itertools.permutations(range(5, 10)):
+            previous_output = 0
+            intcodes = [IntCode(instruction, setting=i) for i in phases]
+            while all([not machine.halted for machine in intcodes]):
+                for i, mc in enumerate(intcodes):
+                    # time.sleep(1)
+                    output = mc.run(_input=previous_output)
+                    if not mc.halted:
+                        previous_output = output
+            if result < previous_output:
+                result = previous_output
+        print(result)
 
