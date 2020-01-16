@@ -1,0 +1,18 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+_input	part_1.py	/^        _input = f.readline().strip()$/;"	v
+_input	part_2.py	/^        _input = f.readline().strip()$/;"	v
+counters	part_1.py	/^        counters = find_password(_input, 25, 6)$/;"	v
+counters	part_2.py	/^        counters = find_password(_input, 25, 6)$/;"	v
+data_to_layers	part_1.py	/^def data_to_layers(data, width, height):$/;"	f
+data_to_layers	part_2.py	/^def data_to_layers(data, width, height):$/;"	f
+fill_layer	part_1.py	/^def fill_layer(pixels, width, height):$/;"	f
+fill_layer	part_2.py	/^def fill_layer(pixels, width, height):$/;"	f
+find_password	part_1.py	/^def find_password(_input, img_width, img_height):$/;"	f
+find_password	part_2.py	/^def find_password(_input, img_width, img_height):$/;"	f
+test	part_1.py	/^def test():$/;"	f
+test	part_2.py	/^def test():$/;"	f

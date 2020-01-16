@@ -1,0 +1,44 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+IntCode	part_1.py	/^class IntCode():$/;"	c
+IntCode	part_2.py	/^class IntCode():$/;"	c
+__init__	part_1.py	/^    def __init__(self, program=[], _input=0, setting=0):$/;"	m	class:IntCode
+__init__	part_2.py	/^    def __init__(self, program=[], setting=0):$/;"	m	class:IntCode
+add	part_1.py	/^    def add(self):$/;"	m	class:IntCode
+add	part_2.py	/^    def add(self):$/;"	m	class:IntCode
+equal	part_1.py	/^    def equal(self):$/;"	m	class:IntCode
+equal	part_2.py	/^    def equal(self):$/;"	m	class:IntCode
+get_param	part_1.py	/^    def get_param(self):$/;"	m	class:IntCode
+get_param	part_2.py	/^    def get_param(self):$/;"	m	class:IntCode
+get_value_at	part_1.py	/^    def get_value_at(self, index):$/;"	m	class:IntCode
+get_value_at	part_2.py	/^    def get_value_at(self, index):$/;"	m	class:IntCode
+input	part_1.py	/^        input = f.readline().strip()$/;"	v
+input	part_1.py	/^    def input(self):$/;"	m	class:IntCode
+input	part_2.py	/^    def input(self, _input):$/;"	m	class:IntCode
+instruction	part_1.py	/^        instruction = [int(i) for i in input.split(',')]$/;"	v
+is_opcode	part_1.py	/^    def is_opcode(self, numb):$/;"	m	class:IntCode
+is_opcode	part_2.py	/^    def is_opcode(self, numb):$/;"	m	class:IntCode
+jump_if_false	part_1.py	/^    def jump_if_false(self):$/;"	m	class:IntCode
+jump_if_false	part_2.py	/^    def jump_if_false(self):$/;"	m	class:IntCode
+jump_if_true	part_1.py	/^    def jump_if_true(self):$/;"	m	class:IntCode
+jump_if_true	part_2.py	/^    def jump_if_true(self):$/;"	m	class:IntCode
+less_than	part_1.py	/^    def less_than(self):$/;"	m	class:IntCode
+less_than	part_2.py	/^    def less_than(self):$/;"	m	class:IntCode
+multiply	part_1.py	/^    def multiply(self):$/;"	m	class:IntCode
+multiply	part_2.py	/^    def multiply(self):$/;"	m	class:IntCode
+output	part_1.py	/^                output = IntCode(instruction, setting=s, _input=output).run()$/;"	v
+output	part_1.py	/^            output = 0$/;"	v
+output	part_1.py	/^    def output(self):$/;"	m	class:IntCode
+output	part_2.py	/^    def output(self):$/;"	m	class:IntCode
+result	part_1.py	/^                result = output$/;"	v
+result	part_1.py	/^        result = 0$/;"	v
+run	part_1.py	/^    def run(self):$/;"	m	class:IntCode
+run	part_2.py	/^    def run(self, _input):$/;"	m	class:IntCode
+set_third_param	part_1.py	/^    def set_third_param(self, value):$/;"	m	class:IntCode
+set_third_param	part_2.py	/^    def set_third_param(self, value):$/;"	m	class:IntCode
+test	part_1.py	/^def test():$/;"	f
+test	part_2.py	/^def test():$/;"	f
