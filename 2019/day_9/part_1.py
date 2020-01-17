@@ -10,32 +10,38 @@ class IntCode:
         self.opcode = None
         self.first_mode = None
         self.second_mode = None
+        self.third_mode = None
         self.first_param = None
         self.second_param = None
+        self.third_param = None
         self.value = None
         self.halted = False
         self.setted = False
         self.outputs = []
         self.inputs = []
         self.memory = {}
+        self.valid_opcodes = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        self.writable = [1, 2, 5, 6, 7, 8]
+        self.length = len(program)
 
     def get_param(self):
-        self.first_param = self.get_value_at(self.index + 1)
-        if self.first_mode == 0:
-            self.first_param = self.get_value_at(self.index + 1, position=True)
-        if self.first_mode == 2:
-            self.first_param = self.get_value_at(self.index + 1, relative=True)
+        position = True if self.first_mode == 0 else False
+        relative = True if self.first_mode == 2 else False
+        write = True if self.opcode == 3 else False
+        self.first_param = self.get_value_at(self.index + 1, position, relative, write)
 
         if self.opcode in [1, 2, 5, 6, 7, 8]:
-            self.second_param = self.get_value_at(self.index + 2)
-            if self.second_mode == 0:
-                self.second_param = self.get_value_at(self.index + 2, position=True)
-            if self.second_mode == 2:
-                self.second_param = self.get_value_at(self.index + 2, relative=True)
-        print(f"Index {self.index} - OPcode {self.opcode} - First mode {self.first_mode} - Second mode {self.second_mode} - First param {self.first_param} - Second param {self.second_param}")
-        # time.sleep(0.5)
+            position = True if self.second_mode == 0 else False
+            relative = True if self.second_mode == 2 else False
+            self.second_param = self.get_value_at(self.index + 2, position, relative)
 
-    def get_value_at(self, index, position=False, relative=False):
+            position = True if self.third_mode == 0 else False
+            relative = True if self.third_mode == 2 else False
+            self.third_param = self.get_value_at(self.index + 3, position, relative, write=True)
+
+        print(f"{self.index} | OPCode {self.opcode} | 1st M {self.first_mode} | 1st V {self.first_param} | 2nd M {self.second_mode} | 2nd V {self.second_param} | 3rd M {self.third_mode} | 3rd {self.third_param}")
+
+    def get_value_at(self, index, position=False, relative=False, write=False):
         if position:
             idx = self.program[index]
         elif relative:
@@ -46,36 +52,42 @@ class IntCode:
         if idx < 0:
             raise IndexError
 
-        if idx < len(self.program):
+        if write:
+            return idx
+
+        if idx < self.length:
             return self.program[idx]
         else:
-            # print(f"[Get] from memory instead - Index {idx} - Value {self.memory.get(idx, 0)}")
             return self.memory.get(idx, 0)
 
     def set_third_param(self, value):
-        idx = self.index + 3
-        if idx < len(self.program) and self.program[idx] < len(self.program):
-            self.program[self.program[idx]] = value
+        if self.third_param < self.length:
+            self.program[self.third_param] = value
         else:
-            # print(f"Set to memory instead - Index {self.index + 3} - Value {value}")
-            self.memory[self.program[idx]] = value
+            self.memory[self.third_param] = value
 
     def is_opcode(self, numb):
-        n = str(numb).zfill(4)
+        n = str(numb).zfill(5)
         opcode = int(n[-2:])
-        first_mode = int(n[1])
-        second_mode = int(n[0])
-        if first_mode not in [0, 1, 2] or second_mode not in [0, 1, 2]:
+        first_mode = int(n[2])
+        second_mode = int(n[1])
+        third_mode = int(n[0])
+        if first_mode not in [0, 1, 2] or second_mode not in [0, 1, 2] or third_mode not in [0, 2]:
             return False
-        if opcode in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+        if opcode in self.valid_opcodes:
             self.opcode = opcode
             self.first_mode = first_mode
             self.second_mode = second_mode
+            if opcode in self.writable:
+                self.third_mode = third_mode
             return True
 
     def input(self, _input):
-        self.program[self.first_param] = _input
-        print(f"Write input {_input} to index {self.first_param}")
+        if self.first_param < self.length:
+            self.program[self.first_param] = _input
+        else:
+            self.memory[self.first_param] = _input
+
         self.index += 2
 
     def output(self):
@@ -162,7 +174,7 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    # test()
 
     with open('./input.txt', 'rt') as f:
         input = f.readline().strip()
