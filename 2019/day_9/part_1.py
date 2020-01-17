@@ -41,11 +41,17 @@ class IntCode:
 
         print(f"{self.index} | OPCode {self.opcode} | 1st M {self.first_mode} | 1st V {self.first_param} | 2nd M {self.second_mode} | 2nd V {self.second_param} | 3rd M {self.third_mode} | 3rd {self.third_param}")
 
+    def try_get_value(self, idx):
+        if idx < self.length:
+            return self.program[idx]
+        else:
+            return self.memory.get(idx, 0)
+
     def get_value_at(self, index, position=False, relative=False, write=False):
         if position:
-            idx = self.program[index]
+            idx = self.try_get_value(index)
         elif relative:
-            idx = self.program[index] + self.relative_base
+            idx = self.try_get_value(index) + self.relative_base
         else:
             idx = index
 
@@ -55,10 +61,7 @@ class IntCode:
         if write:
             return idx
 
-        if idx < self.length:
-            return self.program[idx]
-        else:
-            return self.memory.get(idx, 0)
+        return self.try_get_value(idx)
 
     def set_third_param(self, value):
         if self.third_param < self.length:
@@ -180,5 +183,5 @@ if __name__ == '__main__':
         input = f.readline().strip()
         instruction = [int(i) for i in input.split(',')]
         machine = IntCode(instruction)
-        print(machine.run(1))
+        print(machine.run(2))
 
